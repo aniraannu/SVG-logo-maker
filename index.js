@@ -1,28 +1,30 @@
 // Imports the fs, inquirer and path
 const inquirer = require("inquirer");
-const { join } = require("path");
 const fs = require('fs');
 //Imports the shapes module
 const { Circle, Square, Triangle } = require("./lib/shapes");
 
 //Define a SVG class that has a constructor that takes two arguments: text and shape.
 class Svg{
+  //constructor 
   constructor(){
       this.textElement = ''
       this.shapeElement = ''
   }
+  //Render Method
   render(){
 
       return `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="300" height="200">${this.shapeElement}${this.textElement}</svg>`
   }
+  //Set Text Method
   setTextElement(text,color){
       this.textElement = `<text x="150" y="125" font-size="60" text-anchor="middle" fill="${color}">${text}</text>`
   }
+  //Set Shape Method
   setShapeElement(shape){
       this.shapeElement = shape.render()
 
   }
-  
 }
 
 //Array of questions for user input using inquirer prompt

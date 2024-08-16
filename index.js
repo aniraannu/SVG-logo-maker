@@ -7,7 +7,7 @@ const { writeFile } = require('fs/promises');
 const { Circle, Square, Triangle } = require("./lib/shapes");
 
 //Define a SVG class that has a constructor that takes two arguments: text and shape.
-class SVG {
+class Svg {
   //Constructor
   //Text and shape elements are set to empty strings
   //Text element is set to the text argument and the color argument
@@ -36,12 +36,6 @@ const questions = [
     type: "input",
     name: "text",
     message: "TEXT: Enter up to three characters:",
-    validate: function (input) {
-      if (input.length > 3) {
-        return "Please enter up to three characters.";
-      }
-      return true;
-    },
   },
   //Text Color
   {
@@ -53,14 +47,14 @@ const questions = [
   //Shape input
   {
     type: "list",
-    name: "shape",
+    name: "shapetype",
     message: "SHAPE: Choose a shape:",
     choices: ["Circle", "Square", "Triangle"],
   },
   //Shape color
   {
     type: "input",
-    name: "shapeColor",
+    name: "shape",
     message:
       "SHAPE COLOR: Enter a color keyword or a hexadecimal number for the shape color:",
   },
@@ -94,12 +88,16 @@ async function init() {
     console.log("Invalid text input!");
     return;
   }
+  console.log("User text: [" + user_text + "]");
   //User text color
   let user_textColor = answers.textColor;
+  console.log("User text color: [" + user_textColor + "]");
     //user shape color
-  let user_shapeColor = answers.shapeColor;
+  let user_shapeColor = answers.shape;
+  console.log("User shape color: [" + user_shapeColor + "]");
   //user shape type
-  let user_shape_type = answers["shape"];
+  let user_shape_type = answers["shapetype"];
+  console.log("User shape: [" + user_shape_type + "]");
   //User shape  
   let user_shape;
     if (user_shape_type === "Square" || user_shape_type === "square") {
@@ -120,13 +118,14 @@ async function init() {
     //set the color of the shape
     user_shape.setColor(user_shapeColor);
     //create a new SVG instance
-    let svg = new SVG();
+    var svg = new Svg();
     svg.setTextElement(user_text, user_textColor);
     svg.setShapeElement(user_shape);
     svgString = svg.render();
     console.log(svgString);
     //write the SVG string to a file
     console.log("Generating logo.svg");
+    console.log("Displaying shape:\n\n" + svgString);
     writeToFile(svg_file, svgString);
   
 }

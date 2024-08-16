@@ -1,102 +1,128 @@
 // Imports the fs, inquirer and path
-const inquirer = require('inquirer');
-const { join } = require('path');
-const { writeFile } = require('fs/promises');
+const inquirer = require("inquirer");
+const { join } = require("path");
+const { writeFile } = require("fs/promises");
 //Imports the shapes module
-const {Circle, Square, Triangle} = require("./lib/shapes");
+const { Circle, Square, Triangle } = require("./lib/shapes");
 
 //Define a SVG class that has a constructor that takes two arguments: text and shape.
 class SVG {
-    //Constructor
-    //Text and shape elements are set to empty strings
-    //Text element is set to the text argument and the color argument
-    //Shape element is set to the shape argument and the color argument
-    constructor() {
-        this.textElement = "";
-        this.shapeElement = "";
-    }
-    //Render method returns the SVG string with the text and shape elements
-    render() {
-        `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="300" height="200">${this.shapeElement}${this.textElement}</svg>`
-    }
-    //Set text method sets the text element
-    setText(text, color) {
-        this.textElement = `<text x="150" y="125" font-size="60" text-anchor="middle" fill="${color}">${text}</text>`
-    }
-    //Set shape method sets the shape element
-    setShape(shape) {
-        this.shapeElement = shape.render()
-    }
+  //Constructor
+  //Text and shape elements are set to empty strings
+  //Text element is set to the text argument and the color argument
+  //Shape element is set to the shape argument and the color argument
+  constructor() {
+    this.textElement = "";
+    this.shapeElement = "";
+  }
+  //Render method returns the SVG string with the text and shape elements
+  render() {
+    `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="300" height="200">${this.shapeElement}${this.textElement}</svg>`;
+  }
+  //Set text method sets the text element
+  setTextElement(text, color) {
+    this.textElement = `<text x="150" y="125" font-size="60" text-anchor="middle" fill="${color}">${text}</text>`;
+  }
+  //Set shape method sets the shape element
+  setShapeElement(shape) {
+    this.shapeElement = shape.render();
+  }
 }
 //Array of questions for user input using inquirer prompt
 const questions = [
-    //Text input
-    {
-        type: 'input',
-        name: 'text',
-        message: 'TEXT: Enter up to three characters:',
-        validate: function (input) {
-            if (input.length > 3) {
-                return 'Please enter up to three characters.';
-            }
-            return true;
-        }
+  //Text input
+  {
+    type: "input",
+    name: "text",
+    message: "TEXT: Enter up to three characters:",
+    validate: function (input) {
+      if (input.length > 3) {
+        return "Please enter up to three characters.";
+      }
+      return true;
     },
-    //Text Color
-    {
-        type: 'input',
-        name: 'textColor',
-        message: 'TEXT COLOR: Enter a color keyword or a hexadecimal number for the text color:',
-    },
-    //Shape input
-    {
-        type: 'list',
-        name: 'shape',
-        message: 'SHAPE: Choose a shape:',
-        choices: ['Circle', 'Square', 'Triangle'],
-    },
-    //Shape color
-    {
-        type: 'input',
-        name: 'shapeColor',
-        message: 'SHAPE COLOR: Enter a color keyword or a hexadecimal number for the shape color:',
-    },
+  },
+  //Text Color
+  {
+    type: "input",
+    name: "textColor",
+    message:
+      "TEXT COLOR: Enter a color keyword or a hexadecimal number for the text color:",
+  },
+  //Shape input
+  {
+    type: "list",
+    name: "shape",
+    message: "SHAPE: Choose a shape:",
+    choices: ["Circle", "Square", "Triangle"],
+  },
+  //Shape color
+  {
+    type: "input",
+    name: "shapeColor",
+    message:
+      "SHAPE COLOR: Enter a color keyword or a hexadecimal number for the shape color:",
+  },
 ];
 // Function to write data to file
 function writeToFile(fileName, data) {
-    writeFile(join(__dirname, fileName), data, (err) => {
-        if (err) throw err;
-        console.log('Generated logo.svg');
-    });
+  writeFile(join(__dirname, fileName), data, (err) => {
+    if (err) throw err;
+    console.log("Generated logo.svg");
+  });
 }
 // Function to initialize app
-function init() {
-    //Welcome Message
-    console.log('Welcome to the Logo Generator!');
-    console.log('Please answer the following questions to generate your logo.');
-    //Prompt the user for input using inquirer
-    inquirer.prompt(questions)
-        .then((answers) => {
-            const { text, textColor, shape, shapeColor } = answers;
-            let shapeObject;
-            switch (shape) {
-                case 'Circle':
-                    shapeObject = new Circle();
-                    break;
-                case 'Square':
-                    shapeObject = new Square();
-                    break;
-                case 'Triangle':
-                    shapeObject = new Triangle();
-                    break;
-            }
-            shapeObject.setColor(shapeColor);
-            const svg = new SVG();
-            svg.setText(text, textColor);
-            svg.setShape(shapeObject);
-            const svgString = svg.render();
-            writeToFile('logo.svg', svgString);
-        });
+async function init() {
+  //Welcome Message
+  console.log("Welcome to the Logo Generator!");
+  console.log("Please answer the following questions to generate your logo.");
+  var svgString = "";
+  var svg_file = "logo.svg";
+  
+  //Prompt the user for input using inquirer
+  const answers = await inquirer.prompt(questions);
+  //User text input
+  let user_text = "";
+  if (answers.text.length > 0 && answers.text.length < 4) {
+    user_text = answers.text;
+  } else {
+    console.log("Invalid text input!");
+    return;
+  }
+  //User text color
+  let user_textColor = answers.textColor;
+    //user shape color
+  let user_shapeColor = answers.shapeColor;
+  //user shape type
+  let user_shape_type = answers["shape"];
+  //User shape  
+  let user_shape;
+    if (user_shape_type === "Square" || user_shape_type === "square") {
+      user_shape = new Square();
+      console.log("User selected Square shape");
+    } else if (user_shape_type === "Circle" || user_shape_type === "circle") {
+      user_shape = new Circle();
+      console.log("User selected Circle shape");
+    } else if (
+      user_shape_type === "Triangle" ||
+      user_shape_type === "triangle"
+    ) {
+      user_shape = new Triangle();
+      console.log("User selected Triangle shape");
+    } else {
+      console.log("Invalid shape!");
+    }
+    //set the color of the shape
+    user_shape.setColor(user_shapeColor);
+    //create a new SVG instance
+    const svg = new SVG();
+    svg.setTextElement(user_text, user_textColor);
+    svg.setShapeElement(user_shape);
+    svgString = svg.render();
+    //write the SVG string to a file
+    console.log("Generating logo.svg");
+    writeToFile(svg_file, svgString);
+  
 }
 // Function call to initialize app
 init();

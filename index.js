@@ -62,3 +62,41 @@ const questions = [
         message: 'SHAPE COLOR: Enter a color keyword or a hexadecimal number for the shape color:',
     },
 ];
+// Function to write data to file
+function writeToFile(fileName, data) {
+    writeFile(join(__dirname, fileName), data, (err) => {
+        if (err) throw err;
+        console.log('Generated logo.svg');
+    });
+}
+// Function to initialize app
+function init() {
+    //Welcome Message
+    console.log('Welcome to the Logo Generator!');
+    console.log('Please answer the following questions to generate your logo.');
+    //Prompt the user for input using inquirer
+    inquirer.prompt(questions)
+        .then((answers) => {
+            const { text, textColor, shape, shapeColor } = answers;
+            let shapeObject;
+            switch (shape) {
+                case 'Circle':
+                    shapeObject = new Circle();
+                    break;
+                case 'Square':
+                    shapeObject = new Square();
+                    break;
+                case 'Triangle':
+                    shapeObject = new Triangle();
+                    break;
+            }
+            shapeObject.setColor(shapeColor);
+            const svg = new SVG();
+            svg.setText(text, textColor);
+            svg.setShape(shapeObject);
+            const svgString = svg.render();
+            writeToFile('logo.svg', svgString);
+        });
+}
+// Function call to initialize app
+init();

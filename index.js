@@ -28,3 +28,37 @@ class SVG {
         this.shapeElement = shape.render()
     }
 }
+//Array of questions for user input using inquirer prompt
+const questions = [
+    //Text input
+    {
+        type: 'input',
+        name: 'text',
+        message: 'TEXT: Enter up to three characters:',
+        validate: function (input) {
+            if (input.length > 3) {
+                return 'Please enter up to three characters.';
+            }
+            return true;
+        }
+    },
+    //Text Color
+    {
+        type: 'input',
+        name: 'textColor',
+        message: 'TEXT COLOR: Enter a color keyword or a hexadecimal number for the text color:',
+    },
+    //Shape input
+    {
+        type: 'list',
+        name: 'shape',
+        message: 'SHAPE: Choose a shape:',
+        choices: ['Circle', 'Square', 'Triangle'],
+    },
+    //Shape color
+    {
+        type: 'input',
+        name: 'shapeColor',
+        message: 'SHAPE COLOR: Enter a color keyword or a hexadecimal number for the shape color:',
+    },
+];

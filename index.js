@@ -1,7 +1,8 @@
 // Imports the fs, inquirer and path
 const inquirer = require("inquirer");
 const { join } = require("path");
-const { writeFile } = require("fs/promises");
+const fs = require('fs');
+const { writeFile } = require('fs/promises');
 //Imports the shapes module
 const { Circle, Square, Triangle } = require("./lib/shapes");
 
@@ -66,11 +67,15 @@ const questions = [
 ];
 // Function to write data to file
 function writeToFile(fileName, data) {
-  writeFile(join(__dirname, fileName), data, (err) => {
-    if (err) throw err;
-    console.log("Generated logo.svg");
-  });
+	console.log("Writing [" + data + "] to file [" + fileName + "]")
+    fs.writeFile(fileName, data, function (err) {
+        if (err) {
+            return console.log(err);
+        }
+        console.log("Congratulations, you have Generated a logo.svg!");
+    });
 }
+
 // Function to initialize app
 async function init() {
   //Welcome Message
@@ -115,10 +120,11 @@ async function init() {
     //set the color of the shape
     user_shape.setColor(user_shapeColor);
     //create a new SVG instance
-    const svg = new SVG();
+    let svg = new SVG();
     svg.setTextElement(user_text, user_textColor);
     svg.setShapeElement(user_shape);
     svgString = svg.render();
+    console.log(svgString);
     //write the SVG string to a file
     console.log("Generating logo.svg");
     writeToFile(svg_file, svgString);

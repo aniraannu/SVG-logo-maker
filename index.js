@@ -118,11 +118,8 @@ async function init() {
     //create a new SVG instance
     var svg = new Svg();
     svg.setTextElement(user_text, user_textColor);
-    console.log(svg);
     svg.setShapeElement(user_shape);
-    console.log(svg);
     svgString = svg.render();
-    console.log(svgString);
     //write the SVG string to a file
     console.log("Generating logo.svg");
     console.log("Displaying shape:\n\n" + svgString);
